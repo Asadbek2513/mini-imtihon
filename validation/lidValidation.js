@@ -1,28 +1,16 @@
 const Joi = require("joi");
 
-const lidValidationSchema = Joi.object({
-    first_name: Joi.string().trim().required(),
-    last_name: Joi.string().trim().required(),
-    phone: Joi.string().pattern(/^\+998\d{9}$/).required(),
-    status: Joi.string().trim().optional(),
-    reason: Joi.string().trim().allow("").optional(),
-    branch: Joi.string().trim().required(),
-    created_by: Joi.string().trim().required(),
-    description: Joi.string().trim().allow("").optional()
+const lidValidation = Joi.object({
+    first_name: Joi.string().required(),
+    last_name: Joi.string().required(),
+    phone_number: Joi.string().pattern(/^\+998\d{9}$/).required(),
+    lid_stage_id: Joi.string().hex(),
+    test_date: Joi.date(),
+    trial_lesson_date: Joi.date(),
+    trial_lesson_time: Joi.string(),
+    trial_lesson_group_id: Joi.string().hex(),
+    lis_status_id: Joi.string().hex().required(),
+    cancel_reason_id: Joi.string().hex()
 });
 
-const updateLidValidationSchema = Joi.object({
-    first_name: Joi.string().trim().optional(),
-    last_name: Joi.string().trim().optional(),
-    phone: Joi.string().pattern(/^\+998\d{9}$/).optional(),
-    status: Joi.string().trim().optional(),
-    reason: Joi.string().trim().allow("").optional(),
-    branch: Joi.string().trim().optional(),
-    created_by: Joi.string().trim().optional(),
-    description: Joi.string().trim().allow("").optional()
-});
-
-module.exports = {
-    lidValidationSchema,
-    updateLidValidationSchema
-};
+module.exports = { lidValidation };

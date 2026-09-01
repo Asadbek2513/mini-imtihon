@@ -1,35 +1,39 @@
 const { Router } = require("express");
-const lessonRouter = Router();
+const lessonRoute = Router();
 const {
-    createLesson,
-    markAttendance,
-    getAttendanceList
+    postLesson,
+    getLesson,
+    getLessonById,
+    updateLesson,
+    deleteLesson
 } = require("../controller/lesson.controller");
 
 const {
-    lessonValidationSchema,
-    attendanceValidationSchema
+    lessonValidation
 } = require("../validation/lessonValidation");
 
 const validationSchema = (schema) => (req, res, next) => {
-    const result = schema.validate(req.body);
-    if (result.error) return res.status(400).send(result.error.details.message);
-    next();
+  const result = schema.validate(req.body);
+  if (result.error) return res.status(400).json({
+    success: false,
+    message: result.error.details[0].message
+  });
+  next();
 };
 
 /**
  * @swagger
  * tags:
- *   name: Lessons & Attendance
- *   description: Darslar jadvali va talabalar davomati API ma'lumotlari
+ *   name: Lessons
+ *   description: Darslarni rejalashtirish
  */
 
 /**
  * @swagger
- * /lesson/create:
+ * /lesson/postLesson:
  *   post:
- *     summary: Dars mavzusi va rejasini yaratish
- *     tags: [Lessons & Attendance]
+ *     summary: Yangi dars yaratish
+ *     tags: [Lessons]
  *     requestBody:
  *       required: true
  *       content:
@@ -38,70 +42,115 @@ const validationSchema = (schema) => (req, res, next) => {
  *             type: object
  *             required:
  *             properties:
- *               group_name:
- *                 type: string
- *               lesson_title:
- *                 type: string
+ *               lesson_theme:
+ *                 type: String
+ *               lesson_number:
+ *                 type: Number
+ *               group_id:
+ *                 type: String
  *               lesson_date:
- *                 type: string
- *               stage_name:
- *                 type: string
- *     responses:
- *       201:
- *         description: Dars rejalashtirildi
- *       400:
- *         description: Validatsiya xatosi
- *       500:
- *         description: Ichki server xatosi
- */
-lessonRouter.post("/create", validationSchema(lessonValidationSchema), createLesson);
-
-/**
- * @swagger
- * /lesson/attendance:
- *   post:
- *     summary: Talabaga dars yoki davomat bahosini qo'yish
- *     tags: [Lessons & Attendance]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             required:
- *             properties:
- *               student_id:
- *                 type: string
- *                 description: O'quvchi ID raqami
- *               lesson_id:
- *                 type: string
- *                 description: Dars ID raqami
- *               is_present:
- *                 type: boolean
- *               score:
- *                 type: number
- *     responses:
- *       201:
- *         description: Davomat yoki baholash saqlandi
- *       400:
- *         description: Validatsiya yoki ID xatosi
- *       500:
- *         description: Ichki server xatosi
- */
-lessonRouter.post("/attendance", validationSchema(attendanceValidationSchema), markAttendance);
-
-/**
- * @swagger
- * /lesson/attendance/all:
- *   get:
- *     summary: Davomatlar va baholashlar tarixini olish
- *     tags: [Lessons & Attendance]
+ *                 type: String
  *     responses:
  *       200:
- *         description: Davomat ro'yxati talaba ma'lumotlari bilan qaytarildi
- *       500:
- *         description: Server xatosi
+ *         description: Dars rejasi yaratildi
+ *       500: 
+ *         description: Ichki server xatosi
  */
-lessonRouter.get("/attendance/all", getAttendanceList);
+lessonRoute.post("/postLesson", validationSchema(lessonValidation), postLesson);
 
-module.exports = { lessonRouter };
+/**
+ * @swagger
+ * /lesson/getLesson:
+ *   get:
+ *     summary: Barcha darslar ro'yxatini olish
+ *     tags: [Lessons]
+ *     responses:
+ *       200:
+ *         description: Darslar ro'yxati
+ *       500: 
+ *         description: Ichki server xatosi
+ */
+lessonRoute.get("/getLesson", getLesson);
+
+/**
+ * @swagger
+ * /lesson/getLessonById/{id}:
+ *   get:
+ *     summary: ID bo'yicha darsni ko'rish
+ *     tags: [Lessons]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: String
+ *     responses:
+ *       200:
+ *         description: Dars topildi
+ *       404:
+ *         description: Dars topilmadi
+ *       500: 
+ *         description: Ichki server xatosi
+ */
+lessonRoute.get("/getLessonById/:id", getLessonById);
+
+/**
+ * @swagger
+ * /lesson/updateLesson/{id}:
+ *   put:
+ *     summary: Darsni tahrirlash
+ *     tags: [Lessons]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: String
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: Object
+ *             properties:
+ *               lesson_theme:
+ *                 type: String
+ *               lesson_number:
+ *                 type: Number
+ *               group_id:
+ *                 type: String
+ *               lesson_date:
+ *                 type: String
+ *     responses:
+ *       200:
+ *         description: Dars yangilandi
+ *       400:
+ *         description: Dars yangilanmadi
+ *       500: 
+ *         description: Ichki server xatosi
+ */
+lessonRoute.put("/updateLesson/:id", validationSchema(lessonValidation), updateLesson);
+
+/**
+ * @swagger
+ * /lesson/deleteLesson/{id}:
+ *   delete:
+ *     summary: Darsni o'chirish
+ *     tags: [Lessons]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: String
+ *     responses:
+ *       200:
+ *         description: O'chirildi
+ *       400:
+ *         description: Dars o'chirilmadi
+ *       500: 
+ *         description: Ichki server xatosi
+ */
+lessonRoute.delete("/deleteLesson/:id", deleteLesson);
+
+module.exports = { lessonRoute };

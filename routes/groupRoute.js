@@ -1,36 +1,38 @@
 const { Router } = require("express");
-const groups = Router();
-
+const groupRoute = Router();
 const {
     GroupRegister,
     getGroups,
+    getGroupById,
     updateGroup,
     deletGroup
 } = require("../controller/group.controller");
 
 const {
-    groupValidationSchema,
-    updateGroupValidationSchema
+    groupValidation
 } = require("../validation/groupValidation");
 
 const validationSchema = (schema) => (req, res, next) => {
-    const result = schema.validate(req.body);
-    if (result.error) return res.status(400).send(result.error.details.message);
-    next();
+  const result = schema.validate(req.body);
+  if (result.error) return res.status(400).json({
+    success: false,
+    message: result.error.details[0].message
+  });
+  next();
 };
 
 /**
  * @swagger
  * tags:
  *   name: Groups
- *   description: Guruhlar boshqaruvi uchun API ma'lumotlari
+ *   description: O'quv guruhlarini boshqarish
  */
 
 /**
  * @swagger
  * /group/GroupRegister:
  *   post:
- *     summary: O'quv guruhi yaratish
+ *     summary: Yangi guruh yaratish
  *     tags: [Groups]
  *     requestBody:
  *       required: true
@@ -41,72 +43,117 @@ const validationSchema = (schema) => (req, res, next) => {
  *             required:
  *             properties:
  *               group_name:
- *                 type: string
+ *                 type: String
  *               lesson_start_time:
- *                 type: string
- *               lesson_end_time:
- *                 type: string
- *               lesson_days:
- *                 type: string
+ *                 type: String
+ *               lesson_continuous:
+ *                 type: String
+ *               lesson_week_day:
+ *                 type: String
+ *               group_stage_id:
+ *                 type: String
  *               room_number:
- *                 type: string
- *               branch:
- *                 type: string
- *               teacher_name:
- *                 type: string
+ *                 type: String
+ *               room_floor:
+ *                 type: Number
+ *               branch_id:
+ *                 type: String
+ *               lessons_quant:
+ *                 type: Number
+ *               is_active:
+ *                 type: Boolean
  *     responses:
- *       201:
- *         description: Guruh muvaffaqiyatli ochildi
- *       400:
- *         description: Guruh ochilishda xatolik yuz berdi
- *       500:
+ *       200:
+ *         description: Yangi guruh yaratildi
+ *       500: 
  *         description: Ichki server xatosi
  */
-groups.post("/GroupRegister", validationSchema(groupValidationSchema), GroupRegister);
+groupRoute.post("/GroupRegister", validationSchema(groupValidation), GroupRegister);
 
 /**
  * @swagger
  * /group/getGroups:
  *   get:
- *     summary: Guruhlar ro'yxatini ko'rish
+ *     summary: Barcha guruhlarni olish
  *     tags: [Groups]
  *     responses:
  *       200:
- *         description: Ro'yxat muvaffaqiyatli qaytarildi
- *       400:
- *         description: Ro'yxat qaytarilishda xatolik yuz berdi
- *       500:
- *         description: Ichki server xatosi 
+ *         description: Guruhlar ro'yxati
+ *       500: 
+ *         description: Ichki server xatosi
  */
-groups.get("/getGroups", getGroups);
+groupRoute.get("/getGroups", getGroups);
 
 /**
  * @swagger
- * /group/updateGroup/{id}:
- *   put:
- *     summary: Guruh ma'lumotlarini yangilash
+ * /group/getGroupById/{id}:
+ *   get:
+ *     summary: ID bo'yicha guruhni olish
  *     tags: [Groups]
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
  *         schema:
- *           type: string
+ *           type: String
+ *     responses:
+ *       200:
+ *         description: Guruh topildi
+ *       404:
+ *         description: Bunday guruh topilmadi
+ *       500: 
+ *         description: Ichki server xatosi
+ */
+groupRoute.get("/getGroupById/:id", getGroupById);
+
+/**
+ * @swagger
+ * /group/updateGroup/{id}:
+ *   put:
+ *     summary: Guruh ma'lumotlarini o'zgartirish
+ *     tags: [Groups]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: String
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
- *             type: object
+ *             type: Object
+ *             properties:
+ *               group_name:
+ *                 type: String
+ *               lesson_start_time:
+ *                 type: String
+ *               lesson_continuous:
+ *                 type: String
+ *               lesson_week_day:
+ *                 type: String
+ *               group_stage_id:
+ *                 type: String
+ *               room_number:
+ *                 type: String
+ *               room_floor:
+ *                 type: Number
+ *               branch_id:
+ *                 type: String
+ *               lessons_quant:
+ *                 type: Number
+ *               is_active:
+ *                 type: Boolean
  *     responses:
  *       200:
- *         description: Guruh yangilandi
+ *         description: Yangilandi
  *       400:
  *         description: Guruh yangilanmadi
- *       500:
+ *       500: 
  *         description: Ichki server xatosi
  */
-groups.put("/updateGroup/:id", validationSchema(updateGroupValidationSchema), updateGroup);
+groupRoute.put("/updateGroup/:id", validationSchema(groupValidation), updateGroup);
 
 /**
  * @swagger
@@ -119,15 +166,11 @@ groups.put("/updateGroup/:id", validationSchema(updateGroupValidationSchema), up
  *         name: id
  *         required: true
  *         schema:
- *           type: string
+ *           type: String
  *     responses:
  *       200:
- *         description: Guruh o'chirildi
- *       400:
- *         description: Guruh o'chirilmadi
- *       500:
- *         description: Ichki sever xatosi
+ *         description: O'chirildi
  */
-groups.delete("/deletGroup/:id", deletGroup);
+groupRoute.delete("/deletGroup/:id", deletGroup);
 
-module.exports = { groups };
+module.exports = { groupRoute };

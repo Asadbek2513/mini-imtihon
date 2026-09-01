@@ -1,123 +1,166 @@
 const { Router } = require("express");
-const students = Router();
-
+const studentRoute = Router();
 const {
     studentRegister,
     getStudents,
+    getStudentById,
     updateStudent,
     deletStudent
 } = require("../controller/student.controller");
 
 const {
-    studentValidationSchema,
-    updateStudentValidationSchema
+    studentValidation
 } = require("../validation/studentValidation");
 
 const validationSchema = (schema) => (req, res, next) => {
-    const result = schema.validate(req.body);
-    if (result.error) return res.status(400).send(result.error.details.message);
-    next();
+  const result = schema.validate(req.body);
+  if (result.error) return res.status(400).json({
+    success: false,
+    message: result.error.details[0].message
+  });
+  next();
 };
 
 /**
  * @swagger
  * tags:
  *   name: Students
- *   description: O'quvchilar bilan ishlash uchun API endpointlari
+ *   description: Talabalar va o'quvchilarni boshqarish
  */
 
 /**
  * @swagger
  * /student/studentRegister:
  *   post:
- *     summary: Yangi o'quvchi ro'yxatdan o'tkazish
+ *     summary: Yangi talaba ro'yxatdan o'tkazish
  *     tags: [Students]
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
- *             type: object
+ *             type: Object
  *             required:
  *             properties:
+ *               lid_id:
+ *                 type: String
  *               first_name:
- *                 type: string
+ *                 type: String
  *               last_name:
- *                 type: string
- *               phone:
- *                 type: string
- *               email:
- *                 type: string
- *               password:
- *                 type: string
+ *                 type: String
+ *               phone_number:
+ *                 type: String
+ *               birthday:
+ *                 type: String
  *               gender:
- *                 type: string
+ *                 type: String
  *     responses:
  *       201:
- *         description: O'quvchi muvaffaqiyatli ro'yhatga olindi
+ *         description: Yangi o'quvchi qo'shildi
  *       400:
- *         description: Validatsiya xatosi
+ *         description: Bunday o'quvchi mavjud
+ *       500: 
+ *         description: Ichki server xatosi
  */
-students.post("/studentRegister", validationSchema(studentValidationSchema), studentRegister);
+studentRoute.post("/studentRegister", validationSchema(studentValidation), studentRegister);
 
 /**
  * @swagger
  * /student/getStudents:
  *   get:
- *     summary: O'quvchilar ro'yxatini olish
+ *     summary: Barcha talabalarni ko'rish
  *     tags: [Students]
  *     responses:
  *       200:
- *         description: Ro'yxatga olindi
- *       500:
+ *         description: Talabalar ro'yxati
+ *       500: 
  *         description: Ichki server xatosi
  */
-students.get("/getStudents", getStudents);
+studentRoute.get("/getStudents", getStudents);
+
+/**
+ * @swagger
+ * /student/getStudentById/{id}:
+ *   get:
+ *     summary: ID bo'yicha talabani ko'rish
+ *     tags: [Students]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: String
+ *     responses:
+ *       200:
+ *         description: Talaba topildi
+ *       400:
+ *         description: O'quvchi topilmadi
+ *       500: 
+ *         description: Ichki server xatosi
+ */
+studentRoute.get("/getStudentById/:id", getStudentById);
 
 /**
  * @swagger
  * /student/updateStudent/{id}:
  *   put:
- *     summary: O'quvchilarning ma'lumotlarini ID orqali yangilash
+ *     summary: Talabani tahrirlash
  *     tags: [Students]
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
  *         schema:
- *           type: string
+ *           type: String
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
- *             type: object
+ *             type: Object
+ *             properties:
+ *               lid_id:
+ *                 type: String
+ *               first_name:
+ *                 type: String
+ *               last_name:
+ *                 type: String
+ *               phone_number:
+ *                 type: String
+ *               birthday:
+ *                 type: String
+ *               gender:
+ *                 type: String
  *     responses:
  *       200:
- *         description: Muvaffaqiyatli yangilandi
- *       404:
- *         description: Muvaffaqiyatli yangilanmadi
+ *         description: Yangilandi
+ *       400:
+ *         description: DYangilanmadi
+ *       500: 
+ *         description: Ichki server xatosi
  */
-students.put("/updateStudent/:id", validationSchema(updateStudentValidationSchema), updateStudent);
+studentRoute.put("/updateStudent/:id", validationSchema(studentValidation), updateStudent);
 
 /**
  * @swagger
  * /student/deletStudent/{id}:
  *   delete:
- *     summary: O'quvchini o'chirish
+ *     summary: Talabani o'chirish
  *     tags: [Students]
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
  *         schema:
- *           type: string
+ *           type: String
  *     responses:
  *       200:
- *         description: O'quvchi muvaffaqiyatli o'chirildi
- *       500:
- *         description: Ma'lumotlar o'chirilmadi
+ *         description: Yangi o'quvchi o'chirildi.
+ *       400:
+ *         description: O'quvchi topilmadi
+ *       500: 
+ *         description: Ichki server xatosi
  */
-students.delete("/deletStudent/:id", deletStudent);
+studentRoute.delete("/deletStudent/:id", deletStudent);
 
-module.exports = { students };
+module.exports = { studentRoute };

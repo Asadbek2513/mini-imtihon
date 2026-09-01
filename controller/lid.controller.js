@@ -1,20 +1,13 @@
-const { date } = require("joi");
-const { Lid } = require("../model/lidSchema");
+const Lid = require("../model/lidSchema");
 
 const lidRegister = async (req, res) => {
   try {
-    const lid = await Lid.findOne({
-      phone: req.body.phone
-    });
-    if (lid) return res.status(400).json({
-      success: false,
-      message: "Bunday ma'lumot mavjud"
-    });
     const newLid = new Lid(req.body);
     await newLid.save();
-    return res.status(200).json({
+    return res.status(201).json({
       success: true,
-      message: "Ma'lumot muvaffaqiyatli qo'shildi"
+      message: "Ma'lumot muvaffaqiyatli qo'shildi",
+      data: newLid
     });
   } catch (error) {
     return res.status(500).json({
@@ -26,13 +19,45 @@ const lidRegister = async (req, res) => {
 
 const getLid = async (req, res) => {
   try {
+    const lids = await Lid.find()
+      .populate("lid_stage_id")
+      .populate("trial_lesson_group_id")
+      .populate("lid_status_id")
+      .populate("cancel_reason_id");
     return res.status(200).json({
       success: true,
-      date: await Lid.find()
+      message: "Lidlar ro'yxati qaytarildi",
+      data: lids
     });
   } catch (error) {
     return res.status(500).json({
       success: false,
+      message: "Ichki server xatosi",
+      error: error.message
+    });
+  }
+};
+
+const getLidById = async (req, res) => {
+  try {
+    const lid = await Lid.findById(req.params.id)
+      .populate("lid_stage_id")
+      .populate("trial_lesson_group_id")
+      .populate("lid_status_id")
+      .populate("cancel_reason_id");
+    if (!lid) return res.status(404).json({
+      success: false,
+      message: "Bunday lid topilmadi"
+    });
+    return res.status(200).json({
+      success: true,
+      message: "Lid topildi",
+      data: lid
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Ichki server xatosi",
       error: error.message
     });
   }
@@ -51,11 +76,13 @@ const updateLid = async (req, res) => {
     });
     return res.status(200).json({
       success: true,
-      date: updated
-    })
+      message: "Lid yangilandi",
+      data: updated
+    });
   } catch (error) {
     return res.status(500).json({
       success: false,
+      message: "Ichki server xatosi",
       error: error.message
     });
   }
@@ -63,12 +90,12 @@ const updateLid = async (req, res) => {
 
 const deletLid = async (req, res) => {
   try {
-    if (!await Lid.findByIdAndDelete(
-      req.params.id
-    )) return res.status(400).json({
-      success: false,
-      message: "Topilmadi"
-    });
+    if (!await Lid.findByIdAndDelete(req.params.id)) {
+      return res.status(400).json({
+        success: false,
+        message: "Lid o'chirildi"
+      });
+    }
     return res.status(200).json({
       success: true,
       message: "Delet bajarildi"
@@ -76,6 +103,7 @@ const deletLid = async (req, res) => {
   } catch (error) {
     return res.status(500).json({
       success: false,
+      message: "Ichki server xatosi",
       error: error.message
     });
   }
@@ -84,6 +112,7 @@ const deletLid = async (req, res) => {
 module.exports = {
   lidRegister,
   getLid,
+  getLidById,
   updateLid,
   deletLid
 };

@@ -1,88 +1,164 @@
 const { Router } = require("express");
-const payments = Router();
-
+const paymentRoute = Router();
 const {
-    paymentRegister,
-    getPayment
+    postPayment,
+    getPayment,
+    getPaymentById,
+    updatePayment,
+    deletePayment
 } = require("../controller/payment.controller");
 
-const { paymentValidationSchema } = require("../validation/paymentValidation");
+const {
+    paymentValidation
+} = require("../validation/paymentValidation");
 
 const validationSchema = (schema) => (req, res, next) => {
-    if (!schema || typeof schema.validate !== 'function') {
-        return res.status(500).json({ 
-            success: false, 
-            message: "Validatsiya sxemasi yuklanishida xato! validation/paymentValidation.js faylini tekshiring." 
-        });
-    }
-
-    const result = schema.validate(req.body);
-    if (result.error) {
-        return res.status(400).json({
-            success: false,
-            message: result.error.details[0].message
-        });
-    }
-    next();
+  const result = schema.validate(req.body);
+  if (result.error) return res.status(400).json({
+    success: false,
+    message: result.error.details[0].message
+  });
+  next();
 };
 
 /**
  * @swagger
  * tags:
  *   name: Payments
- *   description: Kurs to'lovlaridan ishlash API
+ *   description: To'lovlarni boshqarish API
  */
 
 /**
  * @swagger
- * /payment/paymentRegister:
+ * /payment/postPayment:
  *   post:
- *     summary: O'quvchidan to'lov qabul qilish
+ *     summary: Yangi to'lovni rasmiylashtirish
  *     tags: [Payments]
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
- *             type: object
+ *             type: Object
  *             required:
- *               - student_id
- *               - amount
- *               - payment_type
- *               - collected_by
  *             properties:
  *               student_id:
- *                 type: string
- *               amount:
- *                 type: number
- *               payment_type:
- *                 type: string
- *               collected_by:
- *                 type: string
+ *                 type: String
+ *               payment_last_date:
+ *                 type: String
+ *                 format: date
+ *               payment_date:
+ *                 type: String
+ *               price:
+ *                 type: Number
+ *               is_paid:
+ *                 type: Boolean
+ *               total_attent:
+ *                 type: Number
  *     responses:
  *       201:
- *         description: To'lov muvaffaqiyatli saqlandi
- *       400:
- *         description: Saqlanishda xatolik yuz berdi
- *       500:
+ *         description: To'lov qabul qilindi
+ *       500: 
  *         description: Ichki server xatosi
  */
-payments.post("/paymentRegister", validationSchema(paymentValidationSchema), paymentRegister);
+paymentRoute.post("/postPayment", validationSchema(paymentValidation), postPayment);
 
 /**
  * @swagger
  * /payment/getPayment:
  *   get:
- *     summary: To'lovlar tarixini olish
+ *     summary: Barcha to'lovlar ro'yxatini olish
  *     tags: [Payments]
  *     responses:
  *       200:
- *         description: Muvaffaqiyatli qaytarildi
- *       400:
- *         description: Qaytarilishda xatolik yuz berdi
- *       500:
+ *         description: To'lovlar ro'yxati
+ *       500: 
  *         description: Ichki server xatosi
  */
-payments.get("/getPayment", getPayment);
+paymentRoute.get("/getPayment", getPayment);
 
-module.exports = { payments };
+/**
+ * @swagger
+ * /payment/getPaymentById/{id}:
+ *   get:
+ *     summary: ID bo'yicha to'lovni ko'rish
+ *     tags: [Payments]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: String
+ *     responses:
+ *       200:
+ *         description: To'lov topildi
+ *       400:
+ *         description: To'lov topilmadi
+ *       500: 
+ *         description: Ichki server xatosi
+ */
+paymentRoute.get("/getPaymentById/:id", getPaymentById);
+
+/**
+ * @swagger
+ * /payment/updatePayment/{id}:
+ *   put:
+ *     summary: To'lov ma'lumotlarini tahrirlash
+ *     tags: [Payments]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: String
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: Object
+ *             properties:
+ *               student_id:
+ *                 type: String
+ *               payment_last_date:
+ *                 type: String
+ *                 format: date
+ *               payment_date:
+ *                 type: String
+ *               price:
+ *                 type: Number
+ *               is_paid:
+ *                 type: Boolean
+ *               total_attent:
+ *                 type: Number
+ *     responses:
+ *       200:
+ *         description: To'lov yangilandi
+ *       500: 
+ *         description: Ichki server xatosi
+ */
+paymentRoute.put("/updatePayment/:id", validationSchema(paymentValidation), updatePayment);
+
+/**
+ * @swagger
+ * /payment/deletePayment/{id}:
+ *   delete:
+ *     summary: To'lovni o'chirish
+ *     tags: [Payments]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: String
+ *     responses:
+ *       200:
+ *         description: O'chirildi
+ *       400:
+ *         description: To'lov o'chirilmadi
+ *       500: 
+ *         description: Ichki server xatosi
+ */
+paymentRoute.delete("/deletePayment/:id", deletePayment);
+
+module.exports = { paymentRoute };

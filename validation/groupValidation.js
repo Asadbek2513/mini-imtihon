@@ -1,27 +1,16 @@
 const Joi = require("joi");
 
-const groupValidationSchema = Joi.object({
-    group_name: Joi.string().trim().required(),
+const groupValidation = Joi.object({
+    group_name: Joi.string().required(),
     lesson_start_time: Joi.string().required(),
-    lesson_end_time: Joi.string().required(),
-    lesson_days: Joi.string().trim().optional(),
+    lesson_continuous: Joi.string().required(),
+    lesson_week_days: Joi.string().required(),
+    group_stage_id: Joi.string().hex().required(),
     room_number: Joi.string().required(),
-    branch: Joi.string().trim().required(),
-    teacher_name: Joi.string().trim().required()
+    room_floor: Joi.number().required(),
+    branch_id: Joi.string().hex().required(),
+    lessons_quant: Joi.number().required(),
+    is_active: Joi.boolean().default(true)
 });
 
-const updateGroupValidationSchema = Joi.object({
-    group_name: Joi.string().trim().optional(),
-    lesson_start_time: Joi.string().optional(),
-    lesson_end_time: Joi.string().optional(),
-    lesson_days: Joi.array().items(Joi.string()).optional(),
-    room_number: Joi.string().optional(),
-    branch: Joi.string().trim().optional(),
-    teacher_name: Joi.string().trim().optional(),
-    is_active: Joi.boolean().optional()
-});
-
-module.exports = {
-    groupValidationSchema,
-    updateGroupValidationSchema
-};
+module.exports = { groupValidation };

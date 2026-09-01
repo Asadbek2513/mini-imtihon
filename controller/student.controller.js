@@ -1,32 +1,28 @@
-const { data } = require("joi");
-const bcrypt = require("bcrypt");
-const { Student } = require("../model/studentSchema");
+const Students = require("../model/studentsSchema");
 
 const studentRegister = async (req, res) => {
   try {
-    const student = await Student.findOne({
-      phone: req.body.phone
-    });
-    if (student) return res.status(400).json({
-      success: false,
-      message: "Bunday o'quvchi mavjud"
-    });
-    const studentPassword = await bcrypt.hash(
-      req.body.password,
-      10
-    );
-    const newStudent = new Student({
-      ...req.body,
-      password: studentPassword
-    })
+    const { phone_number } = req.body;
+    const student = await Students.findOne({ phone_number });
+    if (student) {
+      return res.status(400).json({
+        success: false,
+        message: "Bunday o'quvchi mavjud"
+      });
+    }
+
+    const newStudent = new Students(req.body);
     await newStudent.save();
-    return res.status(200).json({
+
+    return res.status(201).json({
       success: true,
-      message: "Yangi o'quvchi qo'shildi"
+      message: "Yangi o'quvchi qo'shildi",
+      data: newStudent
     });
   } catch (error) {
     return res.status(500).json({
       success: false,
+      message: "Icki server xatosi",
       error: error.message
     });
   }
@@ -34,13 +30,43 @@ const studentRegister = async (req, res) => {
 
 const getStudents = async (req, res) => {
   try {
+    const studentes = await Students
+      .find()
+      .populate("lid_id")
     return res.status(200).json({
       success: true,
-      data: await Student.find().select("-password")
+      message: "Talabalar ro'yxati",
+      data: studentes
     });
   } catch (error) {
     return res.status(500).json({
       success: false,
+      message: "Icki server xatosi",
+      error: error.message
+    });
+  }
+};
+
+const getStudentById = async (req, res) => {
+  try {
+    const student = await Students
+      .findById(req.params.id)
+      .populate("lid_id");
+    if (!student) {
+      return res.status(404).json({
+        success: false,
+        message: "O'quvchi topilmadi"
+      });
+    }
+    return res.status(200).json({
+      success: true,
+      message: "Talaba topildi",
+      data: student
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Icki server xatosi",
       error: error.message
     });
   }
@@ -48,22 +74,26 @@ const getStudents = async (req, res) => {
 
 const updateStudent = async (req, res) => {
   try {
-    if (req.body.password) req.body.password = await bcrypt.hash(
-      req.body.password,
-      10
-    );
-    const updated = await Student.findByIdAndUpdate(
+    const updated = await Students.findByIdAndUpdate(
       req.params.id,
       req.body,
       { new: true }
-    ).select("-password");
+    );
+    if (!updated) {
+      return res.status(400).json({
+        success: false,
+        message: "Yangilanmadi"
+      });
+    }
     return res.status(200).json({
       success: true,
+      message: "Yangilandi",
       data: updated
     });
   } catch (error) {
     return res.status(500).json({
       success: false,
+      message: "Icki server xatosi",
       error: error.message
     });
   }
@@ -71,9 +101,13 @@ const updateStudent = async (req, res) => {
 
 const deletStudent = async (req, res) => {
   try {
-    await Student.findByIdAndDelete(
-      req.params.id
-    );
+    const deleted = await Students.findByIdAndDelete(req.params.id);
+    if (!deleted) {
+      return res.status(400).json({
+        success: false,
+        message: "O'quvchi topilmadi"
+      });
+    }
     return res.status(200).json({
       success: true,
       message: "Yangi o'quvchi o'chirildi."
@@ -81,14 +115,16 @@ const deletStudent = async (req, res) => {
   } catch (error) {
     return res.status(500).json({
       success: false,
+      message: "Icki server xatosi",
       error: error.message
     });
   }
 };
 
-module.exports = { 
+module.exports = {
   studentRegister,
   getStudents,
+  getStudentById,
   updateStudent,
   deletStudent
 };
