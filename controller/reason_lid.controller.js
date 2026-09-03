@@ -35,6 +35,27 @@ const getReason_lid = async (req, res) => {
   }
 };
 
+const searchReason_lid = async (req, res) => {
+  try {
+    const { q } = req.query;
+    const data = await Reason_lid.find({
+      reason_lid: {
+        $regex: q || "",
+        $options: "i"
+      }
+    });
+    return res.status(200).json({
+      success: true,
+      data: Reason_lid
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+};
+
 const getReason_lidById = async (req, res) => {
     try {
         const reason = await Reason_lid.findById(req.params.id);
@@ -100,6 +121,7 @@ const deletReason_lid = async (req, res) => {
 module.exports = {
   postReason_lid,
   getReason_lid,
+  searchReason_lid,
   getReason_lidById,
   updateReason_lid,
   deletReason_lid

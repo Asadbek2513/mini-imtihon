@@ -3,6 +3,7 @@ const studentRoute = Router();
 const {
     studentRegister,
     getStudents,
+    searchStudent,
     getStudentById,
     updateStudent,
     deletStudent
@@ -77,6 +78,25 @@ studentRoute.post("/studentRegister", validationSchema(studentValidation), stude
  *         description: Ichki server xatosi
  */
 studentRoute.get("/getStudents", getStudents);
+
+/**
+ * @swagger
+ * /student/searchStudent:
+ *   get:
+ *     summary: O'quvchilarni ism, familiya yoki telefon bo'yicha qidirish
+ *     tags: [Students]
+ *     parameters:
+ *       - in: query
+ *         name: q
+ *         schema:
+ *           type: String
+ *     responses:
+ *       200:
+ *         description: OK
+ *       500:
+ *         description: Ichki server xatosi
+ */
+studentRoute.get("/search", searchStudent);
 
 /**
  * @swagger

@@ -40,6 +40,27 @@ const getStage = async (req, res) => {
     }
 };
 
+const searchStage = async (req, res) => {
+    try {
+        const { q } = req.query;
+        const stage = await Stage.find({
+            name: {
+                $regex: q || "",
+                $options: "i"
+            }
+        });
+        return res.status(200).json({
+            success: true,
+            data: stage
+        });
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            error: error.message
+        });
+    }
+};
+
 const getStageById = async (req, res) => {
     try {
         const stage = await Branch.findById(req.params.id);
@@ -88,7 +109,8 @@ const updateStage = async (req, res) => {
 
 const deleteStage = async (req, res) => {
     try {
-        if (!await Stage.findByIdAndDelete(req.params.id)) {
+        const deleteStage = await Stage.findByIdAndDelete(req.params.id);
+        if (!deleteStage) {
             return res.status(400).json({
                 success: false,
                 message: "O'chirilmadi"
@@ -111,6 +133,7 @@ const deleteStage = async (req, res) => {
 module.exports = {
     postStage,
     getStage,
+    searchStage,
     getStageById,
     updateStage,
     deleteStage

@@ -3,6 +3,7 @@ const groupRoute = Router();
 const {
     GroupRegister,
     getGroups,
+    searchGroup,
     getGroupById,
     updateGroup,
     deletGroup
@@ -83,6 +84,25 @@ groupRoute.post("/GroupRegister", validationSchema(groupValidation), GroupRegist
  *         description: Ichki server xatosi
  */
 groupRoute.get("/getGroups", getGroups);
+
+/**
+ * @swagger
+ * /group/searchGroup:
+ *   get:
+ *     summary: Guruhlarni nomi bo'yicha qidirish
+ *     tags: [Groups]
+ *     parameters:
+ *       - in: query
+ *         name: q
+ *         schema:
+ *           type: String
+ *     responses:
+ *       200:
+ *         description: OK
+ *       500:
+ *         description: Ichki server xatosi
+ */
+groupRoute.get("/search", searchGroup);
 
 /**
  * @swagger

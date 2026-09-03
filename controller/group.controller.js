@@ -38,6 +38,29 @@ const getGroups = async (req, res) => {
   }
 };
 
+const searchGroup = async (req, res) => {
+  try {
+    const { q } = req.query;
+    const Group = await Group.find(
+      { group_name: {
+          $regex: q || "",
+          $options: "i"
+        }
+      }
+    ).populate("group_stage_id branch_id");
+    return res.status(200).json({
+      success: true,
+      data: Group
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+};
+
+
 const getGroupById = async (req, res) => {
   try {
     const group = await Group
@@ -106,6 +129,7 @@ const deletGroup = async (req, res) => {
 module.exports = {
   GroupRegister,
   getGroups,
+  searchGroup,
   getGroupById,
   updateGroup,
   deletGroup

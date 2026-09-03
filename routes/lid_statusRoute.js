@@ -3,6 +3,7 @@ const lidStatusRoute = Router();
 const {
     postLid_status,
     getLid_status,
+    searchLid_status,
     getLid_statusById,
     updateLid_status,
     deletLid_status
@@ -66,6 +67,23 @@ lidStatusRoute.post("/postLid_status", validationSchema(lidStatusValidation), po
  *         description: Ichki server xatosi
  */
 lidStatusRoute.get("/getLid_status", getLid_status);
+
+/**
+ * @swagger
+ * /lid-status/searchLid_status:
+ *   get:
+ *     summary: Lid statuslarini matn bo'yicha qidirish
+ *     tags: [Lid Statuses]
+ *     parameters:
+ *       - in: query
+ *         name: q
+ *         schema:
+ *           type: String
+ *     responses:
+ *       200:
+ *         description: OK
+ */
+lidStatusRoute.get("/search", searchLid_status);
 
 /**
  * @swagger

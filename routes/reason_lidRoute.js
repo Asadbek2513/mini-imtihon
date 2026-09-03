@@ -3,6 +3,7 @@ const reasonLidRoute = Router();
 const {
     postReason_lid,
     getReason_lid,
+    searchReason_lid,
     getReason_lidById,
     updateReason_lid,
     deletReason_lid
@@ -66,6 +67,23 @@ reasonLidRoute.post("/postReason_lid", validationSchema(reasonLidValidation), po
  *         description: Ichki server xatosi
  */
 reasonLidRoute.get("/getReason_lid", getReason_lid);
+
+/**
+ * @swagger
+ * /reason-lid/searchReason_lid:
+ *   get:
+ *     summary: Rad etilish sabablarini qidirish
+ *     tags: [Reason Lids]
+ *     parameters:
+ *       - in: query
+ *         name: q
+ *         schema:
+ *           type: String
+ *     responses:
+ *       200:
+ *         description: OK
+ */
+reasonLidRoute.get("/search", searchReason_lid);
 
 /**
  * @swagger

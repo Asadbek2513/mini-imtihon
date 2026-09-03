@@ -38,6 +38,40 @@ const getLid = async (req, res) => {
   }
 };
 
+const searchLid = async (req, res) => {
+  try {
+    const { q } = req.query;
+    const Lid = await Lid.find({
+      $or: [
+        { first_name: {
+          $regex: q || "",
+          $options: "i"
+          }
+        },
+        { last_name: {
+          $regex: q || "",
+          $options: "i"
+          }
+        },
+        { phone_number: {
+          $regex: q || "",
+          $options: "i"
+          }
+        }
+      ]
+    }).populate("lid_stage_id trial_lesson_group_id lid_status_id cancel_reason_id");
+    return res.status(200).json({
+      success: true,
+      data: Lid
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+};
+
 const getLidById = async (req, res) => {
   try {
     const lid = await Lid.findById(req.params.id)
@@ -112,6 +146,7 @@ const deletLid = async (req, res) => {
 module.exports = {
   lidRegister,
   getLid,
+  searchLid,
   getLidById,
   updateLid,
   deletLid

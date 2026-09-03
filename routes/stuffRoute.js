@@ -3,9 +3,11 @@ const stuffRoute = Router();
 const {
     stuffRegister,
     getStuff,
+    stuffLogin,
+    searchStuff,
     getStuffById,
     updateStuff,
-    deleteStuff
+    deleteStuff,
 } = require("../controller/stuff.controller");
 
 const {
@@ -76,6 +78,48 @@ stuffRoute.post("/stuffRegister", validationSchema(stuffValidation), stuffRegist
  *         description: Ichki server xatosi
  */
 stuffRoute.get("/getStuff", getStuff);
+
+/**
+ * @swagger
+ * /stuff/searchStuff:
+ *   get:
+ *     summary: Xodimlarni ismi yoki familiyasi bo'yicha qidirish
+ *     tags: [Staff]
+ *     parameters:
+ *       - in: query
+ *         name: q
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: OK
+ */
+stuffRoute.get("/search", searchStuff);
+
+/**
+ * @swagger
+ * /stuff/stuffLogin:
+ *   post:
+ *     summary: Xodim tizimga kirishi (Login)
+ *     tags: [Staff]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               login:
+ *                 type: string
+ *               parol:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Muvaffaqiyatli kirildi
+ *       500:
+ *         description: Ichki server xatosi
+ */
+stuffRoute.post("/login", stuffLogin);
 
 /**
  * @swagger

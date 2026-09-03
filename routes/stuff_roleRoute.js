@@ -65,7 +65,7 @@ stuffRoleRoute.post("/poststuff_role", validationSchema(stuffRoleValidation), po
  *       500: 
  *         description: Ichki server xatosi
  */
-stuffRoleRoute.get("getStuff_role", getStuff_role);
+stuffRoleRoute.get("/getStuff_role", getStuff_role);
 
 /**
  * @swagger

@@ -3,6 +3,7 @@ const roleRoute = Router();
 const {
     postRole,
     getRole,
+    searchRole,
     getRoleById,
     updateRole,
     deleteRole
@@ -66,6 +67,25 @@ roleRoute.post("/postRole", validationSchema(roleValidation), postRole);
  *         description: Ichki server xatosi
  */
 roleRoute.get("/getRole", getRole);
+
+/**
+ * @swagger
+ * /role/searchRole:
+ *   get:
+ *     summary: Rollarni nomi bo'yicha qidirish
+ *     tags: [Roles]
+ *     parameters:
+ *       - in: query
+ *         name: q
+ *         schema:
+ *           type: String
+ *     responses:
+ *       200:
+ *         description: OK
+ *       500:
+ *         description: Ichki server xatosi
+ */
+roleRoute.get("/search", searchRole);
 
 /**
  * @swagger

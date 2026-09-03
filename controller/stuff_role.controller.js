@@ -96,7 +96,8 @@ const updateStuff_role = async (req, res) => {
 
 const deleteStuff_role = async (req, res) => {
     try {
-        if (!await Stuff_role.findByIdAndDelete(req.params.id)) {
+        const deleteStuff_role = await Stuff_role.findByIdAndDelete(req.params.id);
+        if (!deleteStuff_role) {
             return res.status(400).json({
                 success: false,
                 message: "O'chirilmadi"

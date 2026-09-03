@@ -3,6 +3,7 @@ const lidRoute = Router();
 const {
     lidRegister,
     getLid,
+    searchLid,
     getLidById,
     updateLid,
     deletLid
@@ -84,6 +85,25 @@ lidRoute.post("/lidRegister", validationSchema(lidValidation), lidRegister);
  *         description: Ichki server xatosi
  */
 lidRoute.get("/getLid", getLid);
+
+/**
+ * @swagger
+ * /lid/searchLid:
+ *   get:
+ *     summary: Lidlarni ism yoki telefon bo'yicha qidirish
+ *     tags: [Lids]
+ *     parameters:
+ *       - in: query
+ *         name: q
+ *         schema:
+ *           type: String
+ *     responses:
+ *       200:
+ *         description: OK
+ *       500:
+ *         description: Ichki server xatosi
+ */
+lidRoute.get("/search", searchLid);
 
 /**
  * @swagger

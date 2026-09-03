@@ -3,6 +3,7 @@ const studentLessonRoute = Router();
 const {
     postStudent_lesson,
     getStudent_lesson,
+    searchLesson,
     getStudent_lessonById,
     updateStudent_lesson,
     deleteStudent_lesson
@@ -72,6 +73,23 @@ studentLessonRoute.post("/postStudent_lesson", validationSchema(studentLessonVal
  *         description: Ichki server xatosi
  */
 studentLessonRoute.get("/getStudent_lesson", getStudent_lesson);
+
+/**
+ * @swagger
+ * /lesson/searchLesson:
+ *   get:
+ *     summary: Darslarni mavzusi bo'yicha qidirish
+ *     tags: [Lessons]
+ *     parameters:
+ *       - in: query
+ *         name: q
+ *         schema:
+ *           type: String
+ *     responses:
+ *       200:
+ *         description: OK
+ */
+studentLessonRoute.get("/search", searchLesson);
 
 /**
  * @swagger

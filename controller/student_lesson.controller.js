@@ -38,6 +38,28 @@ const getStudent_lesson = async (req, res) => {
     }
 };
 
+const searchLesson = async (req, res) => {
+    try {
+        const { q } = req.query;
+        const data = await Lesson.find({
+            lesson_theme: {
+                $regex: q || "",
+                $options: "i"
+            }
+        }).populate("group_id");
+        return res.status(200).json({
+            success: true,
+            data
+        });
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            error: error.message
+        });
+    }
+};
+
+
 const getStudent_lessonById = async (req, res) => {
     try {
         const item = await Student_lesson
@@ -111,6 +133,7 @@ const deleteStudent_lesson = async (req, res) => {
 module.exports = {
     postStudent_lesson,
     getStudent_lesson,
+    searchLesson,
     getStudent_lessonById,
     updateStudent_lesson,
     deleteStudent_lesson

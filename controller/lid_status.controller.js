@@ -35,6 +35,27 @@ const getLid_status = async (req, res) => {
   }
 };
 
+const searchLid_status = async (req, res) => {
+  try {
+    const { q } = req.query;
+    const Lid_status = await Lid_status.find({
+      status: {
+        $regex: q || "",
+        $options: "i"
+      }
+    });
+    return res.status(200).json({
+      success: true,
+      data: Lid_status
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+};
+
 const getLid_statusById = async (req, res) => {
     try {
         const lid_status = await Lid_status.findById(req.params.id);
@@ -44,7 +65,7 @@ const getLid_statusById = async (req, res) => {
         });
         return res.status(200).json({
             success: true,
-            message: "Ma'lumot topildi",
+            message: "Status topildi",
             data: lid_status
         });
     } catch (error) {
@@ -69,7 +90,7 @@ const updateLid_status = async (req, res) => {
     });
     return res.status(200).json({
       success: true,
-      message: "Yangilandi",
+      message: "Status yangilandi",
       date: updated
     });
   } catch (error) {
@@ -100,6 +121,7 @@ const deletLid_status = async (req, res) => {
 module.exports = {
   postLid_status,
   getLid_status,
+  searchLid_status,
   getLid_statusById,
   updateLid_status,
   deletLid_status

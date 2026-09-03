@@ -1,15 +1,16 @@
 const { Router } = require("express");
 const branchRoute = Router();
 const {
-    postBranch,
-    getBranch,
-    getBranchById,
-    updateBranch,
-    deleteBranch
+  postBranch,
+  getBranch,
+  searchBranch,
+  getBranchById,
+  updateBranch,
+  deleteBranch
 } = require("../controller/branch.controller");
 
 const {
-    branchValidation
+  branchValidation
 } = require("../validation/branchValidation");
 
 const validationSchema = (schema) => (req, res, next) => {
@@ -68,6 +69,25 @@ branchRoute.post("/postBranch", validationSchema(branchValidation), postBranch);
  *         description: Ichki server xatosi
  */
 branchRoute.get("/getBranch", getBranch);
+
+/**
+ * @swagger
+ * /branch/searchBranch:
+ *   get:
+ *     summary: Filiallarni nomi bo'yicha qidirish
+ *     tags: [Branches]
+ *     parameters:
+ *       - in: query
+ *         name: q
+ *         schema:
+ *           type: String
+ *     responses:
+ *       200:
+ *         description: OK
+ *       500:
+ *         description: Ichki server xatosi
+ */
+branchRoute.get("/search", searchBranch);
 
 /**
  * @swagger

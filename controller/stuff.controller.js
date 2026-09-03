@@ -1,18 +1,25 @@
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 const Stuff = require("../model/stuffSchema");
+const { searchIndex } = require("../model/reason_lidSchema");
 
 const stuffRegister = async (req, res) => {
     try {
-        const { login } = req.body;
+        const { login, parol } = req.body;
         const stuffs = await Stuff.findOne({ login });
         if (stuffs) return res.status(400).json({
             success: false,
             message: "Bunday xodim mavjud"
         });
-        const newStuff = new Stuff()
+        const hashedPassword = await bcrypt.hash(parol, 10);
+        const newStuff = new Stuff({
+            ...req.body,
+            parol: hashedPassword
+        });
         await newStuff.save();
         return res.status(201).json({
             success: true,
-            message: "Xodim qo'shishildi",
+            message: "Xodim qo'shildi",
             data: newStuff
         });
     } catch (error) {
@@ -36,6 +43,58 @@ const getStuff = async (req, res) => {
         return res.status(500).json({
             success: false,
             message: "Ichki server xatosi",
+            error: error.message
+        });
+    }
+};
+
+const stuffLogin = async (req, res) => {
+    try {
+        const { login, parol } = req.body;
+        const stuff = await Stuff.findOne({ login });
+        if (!stuff) return res.status(400).json({
+            success: false,
+            message: "Login noto'g'ri"
+        });
+        const math = await bcrypt.compare(parol, stuff.parol);
+        if (!math) return res.status(400).json({
+            success: false,
+            message: "Parol noto'g'ri"
+        });
+        const token = jwt.sign(
+            { id: stuff._id},
+            process.env.JWT_SECRET || "secret_key",
+            { expiresIn: "24" }
+        );
+        return res.status(200).json({
+            success: true,
+            message: "Tizimga kirdingiz",
+            data: token
+        });
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            error: error.message
+        });
+    }
+};
+
+const searchStuff = async (req, res) => {
+    try {
+        const { name } = req.query;
+        const results = await Stuff.find({
+            first_name: {
+                $regex: name,
+                $options: "i"
+            }
+        });
+        return res.status(200).json({
+            success: true,
+            data: results
+        });
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
             error: error.message
         });
     }
@@ -89,7 +148,8 @@ const updateStuff = async (req, res) => {
 
 const deleteStuff = async (req, res) => {
     try {
-        if (!await Stuff.findByIdAndDelete(req.params.id)) {
+        const deleteStuff = await Stuff.findByIdAndDelete(req.params.id);
+        if (!deleteStuff) {
             return res.status(400).json({
                 success: false,
                 message: "Xodim O'chirildi"
@@ -112,6 +172,8 @@ const deleteStuff = async (req, res) => {
 module.exports = {
     stuffRegister,
     getStuff,
+    stuffLogin,
+    searchStuff,
     getStuffById,
     updateStuff,
     deleteStuff

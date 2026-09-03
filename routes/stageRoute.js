@@ -3,6 +3,7 @@ const stageRoute = Router();
 const {
     postStage,
     getStage,
+    searchStage,
     getStageById,
     updateStage,
     deleteStage
@@ -66,6 +67,25 @@ stageRoute.post("/postStage", validationSchema(stageValidation), postStage);
  *         description: Ichki server xatosi
  */
 stageRoute.get("/getStage", getStage);
+
+/**
+ * @swagger
+ * /stage/searchStage:
+ *   get:
+ *     summary: Bosqichlarni nomi bo'yicha qidirish
+ *     tags: [Stages]
+ *     parameters:
+ *       - in: query
+ *         name: q
+ *         schema:
+ *           type: String
+ *     responses:
+ *       200:
+ *         description: OK
+ *       500:
+ *         description: Ichki server xatosi
+ */
+stageRoute.get("/search", searchStage);
 
 /**
  * @swagger

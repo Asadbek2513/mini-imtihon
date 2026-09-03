@@ -10,7 +10,6 @@ const studentRegister = async (req, res) => {
         message: "Bunday o'quvchi mavjud"
       });
     }
-
     const newStudent = new Students(req.body);
     await newStudent.save();
 
@@ -46,6 +45,44 @@ const getStudents = async (req, res) => {
     });
   }
 };
+
+const searchStudent = async (req, res) => {
+  try {
+    const { q } = req.query;
+    const data = await Students.find({
+      $or: [
+        { first_name: 
+          {
+            $regex: q || "",
+            $options: "i"
+          }
+        },
+        { last_name:
+          {
+            $regex: q || "",
+            $options: "i"
+          }
+        },
+        { phone_number:
+          {
+            $regex: q || "",
+            $options: "i"
+          }
+        }
+      ]
+    }).populate("lid_id");
+    return res.status(200).json({
+      success: true,
+      data
+    });
+    } catch (error) {
+      return res.status(500).json({
+        success: false,
+        error: error.message
+      });
+  }
+};
+
 
 const getStudentById = async (req, res) => {
   try {
@@ -124,6 +161,7 @@ const deletStudent = async (req, res) => {
 module.exports = {
   studentRegister,
   getStudents,
+  searchStudent,
   getStudentById,
   updateStudent,
   deletStudent

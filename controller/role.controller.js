@@ -40,6 +40,27 @@ const getRole = async (req, res) => {
     }
 };
 
+const searchRole = async (req, res) => {
+    try {
+        const { q } = req.query;
+        const search = await Role.find({
+            name: {
+                $regex: q || "",
+                $options: "i",
+            }
+        });
+        return res.status(200).json({
+            success: true,
+            data: search
+        });
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            error: error.message
+        });
+    }
+};
+
 const getRoleById = async (req, res) => {
     try {
         const role = await Role.findById(req.params.id);
@@ -88,7 +109,8 @@ const updateRole = async (req, res) => {
 
 const deleteRole = async (req, res) => {
     try {
-        if (!await Role.findByIdAndDelete(req.params.id)) {
+        const deleteRole = await Role.findByIdAndDelete(req.params.id);
+        if (!deleteRole) {
             return res.status(400).json({
                 success: false,
                 message: "O'chirilmadi"
@@ -111,6 +133,7 @@ const deleteRole = async (req, res) => {
 module.exports = {
     postRole,
     getRole,
+    searchRole,
     getRoleById,
     updateRole,
     deleteRole

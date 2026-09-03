@@ -43,6 +43,27 @@ const getBranch = async (req, res) => {
     }
 };
 
+const searchBranch = async (req, res) => {
+    try {
+        const { q } = req.query;
+        const branch = await Branch.find({
+            name: {
+                $regex: q || "",
+                $options: "i"
+            }
+        });
+        return res.status(200).json({
+            success: true,
+            data: branch
+        });
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            error: error.message
+        });
+    }
+};
+
 const getBranchById = async (req, res) => {
     try {
         const branch = await Branch.findById(req.params.id);
@@ -91,7 +112,8 @@ const updateBranch = async (req, res) => {
 
 const deleteBranch = async (req, res) => {
     try {
-        if (!await branch.findByIdAndDelete(req.params.id)) {
+        const deleteBranch = await Branch.findByIdAndDelete(req.params.id);
+        if (!deleteBranch) {
             return res.status(400).json({
                 success: false,
                 message: "Topilmadi"
@@ -113,6 +135,7 @@ const deleteBranch = async (req, res) => {
 module.exports = {
     postBranch,
     getBranch,
+    searchBranch,
     getBranchById,
     updateBranch,
     deleteBranch
