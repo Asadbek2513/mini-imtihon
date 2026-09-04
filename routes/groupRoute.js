@@ -1,16 +1,16 @@
 const { Router } = require("express");
 const groupRoute = Router();
 const {
-    GroupRegister,
-    getGroups,
-    searchGroup,
-    getGroupById,
-    updateGroup,
-    deletGroup
+  GroupRegister,
+  getGroups,
+  searchGroup,
+  getGroupById,
+  updateGroup,
+  deletGroup
 } = require("../controller/group.controller");
 
 const {
-    groupValidation
+  groupValidation
 } = require("../validation/groupValidation");
 
 const validationSchema = (schema) => (req, res, next) => {
@@ -98,7 +98,7 @@ groupRoute.get("/getGroups", getGroups);
  *           type: String
  *     responses:
  *       200:
- *         description: OK
+ *         description: Qidiruv muvaffaqqiyatli yakunlandi
  *       500:
  *         description: Ichki server xatosi
  */

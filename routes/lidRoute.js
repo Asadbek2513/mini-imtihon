@@ -1,16 +1,16 @@
 const { Router } = require("express");
 const lidRoute = Router();
 const {
-    lidRegister,
-    getLid,
-    searchLid,
-    getLidById,
-    updateLid,
-    deletLid
+  lidRegister,
+  getLid,
+  searchLid,
+  getLidById,
+  updateLid,
+  deletLid
 } = require("../controller/lid.controller");
 
 const {
-    lidValidation
+  lidValidation
 } = require("../validation/lidValidation");
 
 const validationSchema = (schema) => (req, res, next) => {
@@ -99,7 +99,7 @@ lidRoute.get("/getLid", getLid);
  *           type: String
  *     responses:
  *       200:
- *         description: OK
+ *         description: Qidiruv muvaffaqqiyatli yakunlandi
  *       500:
  *         description: Ichki server xatosi
  */

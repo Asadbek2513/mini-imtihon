@@ -41,7 +41,7 @@ const getLid = async (req, res) => {
 const searchLid = async (req, res) => {
   try {
     const { q } = req.query;
-    const Lid = await Lid.find({
+    const lids = await Lid.find({
       $or: [
         { first_name: {
           $regex: q || "",
@@ -62,7 +62,7 @@ const searchLid = async (req, res) => {
     }).populate("lid_stage_id trial_lesson_group_id lid_status_id cancel_reason_id");
     return res.status(200).json({
       success: true,
-      data: Lid
+      data: lids
     });
   } catch (error) {
     return res.status(500).json({

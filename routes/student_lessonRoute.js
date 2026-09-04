@@ -1,16 +1,16 @@
 const { Router } = require("express");
 const studentLessonRoute = Router();
 const {
-    postStudent_lesson,
-    getStudent_lesson,
-    searchLesson,
-    getStudent_lessonById,
-    updateStudent_lesson,
-    deleteStudent_lesson
+  postStudent_lesson,
+  getStudent_lesson,
+  searchLesson,
+  getStudent_lessonById,
+  updateStudent_lesson,
+  deleteStudent_lesson
 } = require("../controller/student_lesson.controller");
 
 const {
-    studentLessonValidation
+  studentLessonValidation
 } = require("../validation/student_lessonValidation");
 
 const validationSchema = (schema) => (req, res, next) => {
@@ -87,7 +87,9 @@ studentLessonRoute.get("/getStudent_lesson", getStudent_lesson);
  *           type: String
  *     responses:
  *       200:
- *         description: OK
+ *         description: Qidiruv muvaffaqqiyatli yakunlandi
+ *       500:
+ *         description: Ichki server xatosi
  */
 studentLessonRoute.get("/search", searchLesson);
 

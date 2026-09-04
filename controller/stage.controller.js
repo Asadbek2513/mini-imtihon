@@ -63,7 +63,7 @@ const searchStage = async (req, res) => {
 
 const getStageById = async (req, res) => {
     try {
-        const stage = await Branch.findById(req.params.id);
+        const stage = await Stage.findById(req.params.id);
         if (!stage) return res.status(404).json({
             success: false,
             message: "Bosqich topildi"
@@ -84,7 +84,7 @@ const getStageById = async (req, res) => {
 
 const updateStage = async (req, res) => {
     try {
-        const updated = await Branch.findByIdAndUpdate(
+        const updated = await Stage.findByIdAndUpdate(
             req.params.id,
             req.body,
             { new: true }

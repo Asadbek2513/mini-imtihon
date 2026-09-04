@@ -1,16 +1,16 @@
 const { Router } = require("express");
 const studentRoute = Router();
 const {
-    studentRegister,
-    getStudents,
-    searchStudent,
-    getStudentById,
-    updateStudent,
-    deletStudent
+  studentRegister,
+  getStudents,
+  searchStudent,
+  getStudentById,
+  updateStudent,
+  deletStudent
 } = require("../controller/student.controller");
 
 const {
-    studentValidation
+  studentValidation
 } = require("../validation/studentValidation");
 
 const validationSchema = (schema) => (req, res, next) => {
@@ -92,7 +92,7 @@ studentRoute.get("/getStudents", getStudents);
  *           type: String
  *     responses:
  *       200:
- *         description: OK
+ *         description: Qidiruv muvaffaqqiyatli yakunlandi
  *       500:
  *         description: Ichki server xatosi
  */

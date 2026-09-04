@@ -41,7 +41,7 @@ const getGroups = async (req, res) => {
 const searchGroup = async (req, res) => {
   try {
     const { q } = req.query;
-    const Group = await Group.find(
+    const groups = await Group.find(
       { group_name: {
           $regex: q || "",
           $options: "i"
@@ -50,7 +50,7 @@ const searchGroup = async (req, res) => {
     ).populate("group_stage_id branch_id");
     return res.status(200).json({
       success: true,
-      data: Group
+      data: groups
     });
   } catch (error) {
     return res.status(500).json({

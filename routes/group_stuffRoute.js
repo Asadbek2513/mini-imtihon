@@ -1,15 +1,16 @@
 const { Router } = require("express");
 const groupStuffRoute = Router();
 const {
-    postGroup_stuff,
-    getGroups_stuff,
-    getGroup_stuffById,
-    updateGroup_stuff,
-    deletGroup_stuff
+  postGroup_stuff,
+  getGroups_stuff,
+  searchGroup_stuff,
+  getGroup_stuffById,
+  updateGroup_stuff,
+  deletGroup_stuff
 } = require("../controller/group_stuff.controller");
 
 const { 
-    groupStuffValidation 
+  groupStuffValidation 
 } = require("../validation/group_stuffValidation");
 
 const validationSchema = (schema) => (req, res, next) => {
@@ -67,6 +68,25 @@ groupStuffRoute.post("/postGroup_stuff", validationSchema(groupStuffValidation),
  *         description: Ichki server xatosi
  */
 groupStuffRoute.get("/getGroups_stuff", getGroups_stuff);
+
+/**
+ * @swagger
+ * /group-stuff/searchGroup_stuff:
+ *   get:
+ *     summary: Guruh-Xodim bog'lanmalarini qidirish
+ *     tags: [Group Staff]
+ *     parameters:
+ *       - in: query
+ *         name: q
+ *         schema:
+ *           type: String
+ *     responses:
+ *       200:
+ *         description: Qidiruv muvaffaqqiyatli yakunlandi
+ *       500:
+ *         description: Ichki server xatosi
+ */
+groupStuffRoute.get("/search", searchGroup_stuff);
 
 /**
  * @swagger

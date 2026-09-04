@@ -1,15 +1,16 @@
 const { Router } = require("express");
 const paymentRoute = Router();
 const {
-    postPayment,
-    getPayment,
-    getPaymentById,
-    updatePayment,
-    deletePayment
+  postPayment,
+  getPayment,
+  searchPayment,
+  getPaymentById,
+  updatePayment,
+  deletePayment
 } = require("../controller/payment.controller");
 
 const {
-    paymentValidation
+  paymentValidation
 } = require("../validation/paymentValidation");
 
 const validationSchema = (schema) => (req, res, next) => {
@@ -76,6 +77,25 @@ paymentRoute.post("/postPayment", validationSchema(paymentValidation), postPayme
  *         description: Ichki server xatosi
  */
 paymentRoute.get("/getPayment", getPayment);
+
+/**
+ * @swagger
+ * /payment/searchPayment:
+ *   get:
+ *     summary: To'lovlarni talaba ismi bo'yicha qidirish
+ *     tags: [Payments]
+ *     parameters:
+ *       - in: query
+ *         name: q
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Qidiruv muvaffaqqiyatli yakunlandi
+ *       500:
+ *         description: Ichki server xatosi
+ */
+paymentRoute.get("/search", searchPayment);
 
 /**
  * @swagger

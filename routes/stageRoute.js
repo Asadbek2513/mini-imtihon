@@ -1,16 +1,16 @@
 const { Router } = require("express");
 const stageRoute = Router();
 const {
-    postStage,
-    getStage,
-    searchStage,
-    getStageById,
-    updateStage,
-    deleteStage
+  postStage,
+  getStage,
+  searchStage,
+  getStageById,
+  updateStage,
+  deleteStage
 } = require("../controller/stage.controller");
 
 const {
-    stageValidation
+  stageValidation
 } = require("../validation/stageValidation");
 
 const validationSchema = (schema) => (req, res, next) => {
@@ -81,7 +81,7 @@ stageRoute.get("/getStage", getStage);
  *           type: String
  *     responses:
  *       200:
- *         description: OK
+ *         description: Qidiruv muvaffaqqiyatli yakunlandi
  *       500:
  *         description: Ichki server xatosi
  */

@@ -1,16 +1,16 @@
 const { Router } = require("express");
 const reasonLidRoute = Router();
 const {
-    postReason_lid,
-    getReason_lid,
-    searchReason_lid,
-    getReason_lidById,
-    updateReason_lid,
-    deletReason_lid
+  postReason_lid,
+  getReason_lid,
+  searchReason_lid,
+  getReason_lidById,
+  updateReason_lid,
+  deletReason_lid
 } = require("../controller/reason_lid.controller");
 
 const {
-    reasonLidValidation
+  reasonLidValidation
 } = require("../validation/reason_lidValidation");
 
 const validationSchema = (schema) => (req, res, next) => {
@@ -81,7 +81,9 @@ reasonLidRoute.get("/getReason_lid", getReason_lid);
  *           type: String
  *     responses:
  *       200:
- *         description: OK
+ *         description: Qidiruv muvaffaqqiyatli yakunlandi
+ *       500:
+ *         description: Ichki server xatosi
  */
 reasonLidRoute.get("/search", searchReason_lid);
 

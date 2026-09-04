@@ -1,15 +1,15 @@
 const { Router } = require("express");
 const studentGroupRoute = Router();
 const {
-    postStudent_group,
-    getStudent_group,
-    getStudent_groupById,
-    updateStudent_group,
-    deletStudent_group
+  postStudent_group,
+  getStudent_group,
+  getStudent_groupById,
+  updateStudent_group,
+  deletStudent_group
 } = require("../controller/student_group.controller");
 
 const {
-    studentGroupValidation
+  studentGroupValidation
 } = require("../validation/student_groupValidation");
 
 const validationSchema = (schema) => (req, res, next) => {

@@ -35,6 +35,30 @@ const getPayment = async (req, res) => {
   }
 };
 
+const searchPayment = async (req, res) => {
+  try {
+    const { q } = req.query;
+    const list = await Payment
+      .find()
+      .populate("student_id");
+    const filtered = list.filter(item => 
+      item.student_id && item.student_id.first_name
+        .toLowerCase()
+        .includes((q || "")
+        .toLowerCase())
+    );
+    return res.status(200).json({
+      success: true,
+      data: filtered
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+};
+
 const getPaymentById = async (req, res) => {
   try {
     const item = await Payment
@@ -100,6 +124,7 @@ const deletePayment = async (req, res) => {
 module.exports = {
   postPayment,
   getPayment,
+  searchPayment,
   getPaymentById,
   updatePayment,
   deletePayment

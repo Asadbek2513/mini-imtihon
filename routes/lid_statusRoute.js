@@ -1,16 +1,16 @@
 const { Router } = require("express");
 const lidStatusRoute = Router();
 const {
-    postLid_status,
-    getLid_status,
-    searchLid_status,
-    getLid_statusById,
-    updateLid_status,
-    deletLid_status
+  postLid_status,
+  getLid_status,
+  searchLid_status,
+  getLid_statusById,
+  updateLid_status,
+  deletLid_status
 } = require("../controller/lid_status.controller");
 
 const {
-    lidStatusValidation
+  lidStatusValidation
 } = require("../validation/lid_statusValidation");
 
 const validationSchema = (schema) => (req, res, next) => {
@@ -81,7 +81,9 @@ lidStatusRoute.get("/getLid_status", getLid_status);
  *           type: String
  *     responses:
  *       200:
- *         description: OK
+ *         description: Qidiruv muvaffaqqiyatli yakunlandi
+ *       500:
+ *         description: Ichki server xatosi
  */
 lidStatusRoute.get("/search", searchLid_status);
 

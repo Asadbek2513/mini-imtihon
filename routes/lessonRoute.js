@@ -1,15 +1,15 @@
 const { Router } = require("express");
 const lessonRoute = Router();
 const {
-    postLesson,
-    getLesson,
-    getLessonById,
-    updateLesson,
-    deleteLesson
+  postLesson,
+  getLesson,
+  getLessonById,
+  updateLesson,
+  deleteLesson
 } = require("../controller/lesson.controller");
 
 const {
-    lessonValidation
+  lessonValidation
 } = require("../validation/lessonValidation");
 
 const validationSchema = (schema) => (req, res, next) => {

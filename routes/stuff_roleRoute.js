@@ -1,15 +1,15 @@
 const { Router } = require("express");
 const stuffRoleRoute = Router();
 const {
-    poststuff_role,
-    getStuff_role,
-    getStuff_roleById,
-    updateStuff_role,
-    deleteStuff_role
+  poststuff_role,
+  getStuff_role,
+  getStuff_roleById,
+  updateStuff_role,
+  deleteStuff_role
 } = require("../controller/stuff_role.controller");
 
 const {
-    stuffRoleValidation
+  stuffRoleValidation
 } = require("../validation/stuff_roleValidation");
 
 const validationSchema = (schema) => (req, res, next) => {

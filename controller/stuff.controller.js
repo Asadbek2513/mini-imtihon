@@ -81,12 +81,12 @@ const stuffLogin = async (req, res) => {
 
 const searchStuff = async (req, res) => {
     try {
-        const { name } = req.query;
+        const { q } = req.query;
         const results = await Stuff.find({
-            first_name: {
-                $regex: name,
-                $options: "i"
-            }
+            $or: [
+                { first_name: { $regex: q || "", $options: "i" } },
+                { last_name: { $regex: q || "", $options: "i" } }
+            ]
         });
         return res.status(200).json({
             success: true,

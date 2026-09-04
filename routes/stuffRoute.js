@@ -1,17 +1,17 @@
 const { Router } = require("express");
 const stuffRoute = Router();
 const {
-    stuffRegister,
-    getStuff,
-    stuffLogin,
-    searchStuff,
-    getStuffById,
-    updateStuff,
-    deleteStuff,
+  stuffRegister,
+  getStuff,
+  stuffLogin,
+  searchStuff,
+  getStuffById,
+  updateStuff,
+  deleteStuff,
 } = require("../controller/stuff.controller");
 
 const {
-    stuffValidation
+  stuffValidation
 } = require("../validation/stuffValidation");
 
 const validationSchema = (schema) => (req, res, next) => {
@@ -92,7 +92,9 @@ stuffRoute.get("/getStuff", getStuff);
  *           type: string
  *     responses:
  *       200:
- *         description: OK
+ *         description: Qidiruv muvaffaqqiyatli yakunlandi
+ *       500:
+ *         description: Ichki server xatosi
  */
 stuffRoute.get("/search", searchStuff);
 

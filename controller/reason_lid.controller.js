@@ -38,7 +38,7 @@ const getReason_lid = async (req, res) => {
 const searchReason_lid = async (req, res) => {
   try {
     const { q } = req.query;
-    const data = await Reason_lid.find({
+    const reasons = await Reason_lid.find({
       reason_lid: {
         $regex: q || "",
         $options: "i"
@@ -46,7 +46,7 @@ const searchReason_lid = async (req, res) => {
     });
     return res.status(200).json({
       success: true,
-      data: Reason_lid
+      data: reasons
     });
   } catch (error) {
     return res.status(500).json({

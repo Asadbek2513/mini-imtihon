@@ -1,8 +1,8 @@
-const Group_stuff = require("../model/groupSchema");
+const Group_stuff = require("../model/group_stuffSchema");
 
 const postGroup_stuff = async (req, res) => {
   try {
-    const newGroup_stuff = new Group(req.body);
+    const newGroup_stuff = new Group_stuff(req.body);
     await newGroup_stuff.save();
     return res.status(200).json({
       success: true,
@@ -20,12 +20,10 @@ const postGroup_stuff = async (req, res) => {
 
 const getGroups_stuff = async (req, res) => {
   try {
-    const groups_stuff = await Group.find(
-    ).populate(
-      "group_id"
-    ).populate(
-      "stuff_id"
-    );
+    const groups_stuff = await Group
+    .find()
+    .populate("group_id")
+    .populate("stuff_id");
     return res.status(200).json({
       success: true,
       message: "O'quvchi ro'yxati",
@@ -39,6 +37,37 @@ const getGroups_stuff = async (req, res) => {
     });
   }
 };
+
+const searchGroup_stuff = async (req, res) => {
+  try {
+    const { q } = req.query;
+    const data = await Group_stuff
+    .find()
+    .populate("group_id stuff_id");
+    const filtered = data.filter(item => 
+      (item.group_id && item.group_id.group_name
+        .toLowerCase()
+        .includes((q || "")
+        .toLowerCase())
+      ) ||
+      (item.stuff_id && item.stuff_id.first_name
+        .toLowerCase()
+        .includes((q || "")
+        .toLowerCase())
+      )
+    );
+    return res.status(200).json({
+      success: true,
+      data: filtered
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+};
+
 
 const getGroup_stuffById = async (req, res) => {
   try {
@@ -108,6 +137,7 @@ const deletGroup_stuff = async (req, res) => {
 module.exports = {
   postGroup_stuff,
   getGroups_stuff,
+  searchGroup_stuff,
   getGroup_stuffById,
   updateGroup_stuff,
   deletGroup_stuff

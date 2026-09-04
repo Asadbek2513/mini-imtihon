@@ -1,16 +1,16 @@
 const { Router } = require("express");
 const roleRoute = Router();
 const {
-    postRole,
-    getRole,
-    searchRole,
-    getRoleById,
-    updateRole,
-    deleteRole
+  postRole,
+  getRole,
+  searchRole,
+  getRoleById,
+  updateRole,
+  deleteRole
 } = require("../controller/role.controller");
 
 const {
-    roleValidation
+  roleValidation
 } = require("../validation/roleValidation");
 
 const validationSchema = (schema) => (req, res, next) => {
@@ -81,7 +81,7 @@ roleRoute.get("/getRole", getRole);
  *           type: String
  *     responses:
  *       200:
- *         description: OK
+ *         description: Qidiruv muvaffaqqiyatli yakunlandi
  *       500:
  *         description: Ichki server xatosi
  */
